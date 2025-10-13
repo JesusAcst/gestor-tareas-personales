@@ -1,5 +1,6 @@
 // Ruta desde la raíz de tu proyecto: backend/controllers/categoryController.js
 const Category = require('../models/Category'); // Importar el modelo Category
+const Task = require('../models/Task'); // Importar el modelo Task para manejar la eliminación en cascada
 
 // @desc    Obtener todas las categorías
 // @route   GET /api/categories
@@ -37,21 +38,65 @@ const createCategory = async (req, res) => {
     }
 };
 
+
+// @desc    Actualizar una categoría
+// @route   PUT /api/categories/:id
+// @access  Public
+const updateCategory = async (req, res) => {
+    const { name, color } = req.body;
+
+    // Validación básica: al menos un campo debe estar presente para actualizar
+    if (!name && !color) {
+        return res.status(400).json({ message: 'Debe proporcionar al menos el nombre o el color para actualizar.' });
+    }
+
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({ message: 'Categoría no encontrada.' });
+        }
+
+        // Aplicar los cambios solo si se proporcionan en el cuerpo de la solicitud
+        if (name !== undefined) {
+            category.name = name;
+        }
+        if (color !== undefined) {
+            category.color = color;
+        }
+
+        const updatedCategory = await category.save();
+        res.status(200).json(updatedCategory);
+
+    } catch (error) {
+        // Manejo de error de duplicado (si intentan poner un 'name' que ya existe)
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'Ya existe una categoría con ese nombre.' });
+        }
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 // @desc    Eliminar una categoría
 // @route   DELETE /api/categories/:id
 // @access  Public
 const deleteCategory = async (req, res) => {
     try {
-        // Buscamos y eliminamos por ID
+        // 1. Desvincular Tareas: Establecer la categoría a null en las tareas asociadas
+        await Task.updateMany(
+            { category: req.params.id }, 
+            { category: null } // Desvincula la categoría
+        );
+
+        // 2. Eliminar la Categoría
         const category = await Category.findByIdAndDelete(req.params.id);
 
         if (!category) {
             return res.status(404).json({ message: 'Categoría no encontrada.' });
         }
         
-        // **(NOTA):** La lógica para eliminar tareas asociadas se implementará después.
-
-        res.status(200).json({ message: `Categoría "${category.name}" eliminada con éxito.` });
+        res.status(200).json({ message: `Categoría "${category.name}" eliminada. Las tareas asociadas ahora no tienen categoría.` });
 
     } catch (error) {
         res.status(500).json({ message: 'Error del servidor al eliminar la categoría.' });
@@ -62,5 +107,6 @@ const deleteCategory = async (req, res) => {
 module.exports = {
     getCategories,
     createCategory,
+    updateCategory,
     deleteCategory,
 };

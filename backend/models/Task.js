@@ -16,14 +16,25 @@ const TaskSchema = mongoose.Schema({
         default: false,
     },
     category: {
-        // Referencia al modelo Category (Relación 1 a N)
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category', 
-        required: [true, 'La categoría es obligatoria para la tarea'],
+        required: false, // Ya no es obligatorio
     },
+    // Nuevo campo para fecha de vencimiento
     dueDate: {
         type: Date,
-        default: null, // Opcional
+        default: null, // Ahora puede incluir tareas sin fecha de vencimiento
+    },
+    // Nuevo campo para prioridad
+        priority: {
+        type: String,
+        enum: ['Alta', 'Media', 'Baja'], // Restringe los valores posibles
+        required: false, // No es obligatorio
+    },
+    // NUEVO: Campo para recordatorio (e.g., almacenar un timestamp o configuración)
+    reminder: {
+        type: Date,
+        default: null,
     },
 }, {
     timestamps: true,
