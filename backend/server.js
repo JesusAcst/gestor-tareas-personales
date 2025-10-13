@@ -40,8 +40,8 @@ app.get('/', (req, res) => {
 // 7. Definición de Rutas de la API
 // Usaremos la URL base /api para todos nuestros endpoints
 app.use('/api/categories', require('./routes/categoryRoutes'));
-// La ruta de tareas se añadirá en el siguiente paso:
-// app.use('/api/tasks', require('./routes/taskRoutes'));
+app.use('/api/tasks', require('./routes/taskRoutes'));
+
 
 // 8. Iniciar el Servidor
 const PORT = process.env.PORT || 5000;
