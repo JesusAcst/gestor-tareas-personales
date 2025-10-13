@@ -1,0 +1,19 @@
+// Ruta desde la raíz de tu proyecto: backend/routes/categoryRoutes.js
+const express = require('express');
+const router = express.Router();
+const {
+    getCategories,
+    createCategory,
+    deleteCategory,
+} = require('../controllers/categoryController');
+
+// Rutas para /api/categories
+router.route('/')
+    .get(getCategories) // Obtener todas las categorías
+    .post(createCategory); // Crear una nueva categoría
+
+// Rutas para /api/categories/:id
+router.route('/:id')
+    .delete(deleteCategory); // Eliminar por ID
+
+module.exports = router;
