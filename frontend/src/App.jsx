@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// frontend/src/App.jsx
+import { useState } from 'react';
+import TaskList from './components/TaskList';
+import Sidebar from './components/Sidebar';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
+  
+  // Agrega más estado y funciones de la API aquí más tarde
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar - Menú lateral con Categorías y filtros */}
+      <Sidebar categories={categories} />
+      
+      {/* Main Content - Lista de Tareas y cabecera */}
+      <div className="flex-1 p-6 overflow-y-auto">
+        <header className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">Tareas Pendientes</h1>
+          {/* Aquí irá el botón para añadir nueva tarea */}
+        </header>
+        
+        <TaskList tasks={tasks} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
