@@ -1,7 +1,7 @@
-import { formatDueDate, priorityBadge } from '../services/api';
+import { formatDueDate, priorityBadge, normalizePriority } from '../services/api';
 
 export default function TaskCard({ task, onComplete, onDelete }) {
-  const pr = priorityBadge(task.priority || (task.category?.color === '#ef4444' ? 'high' : 'low'));
+  const pr = priorityBadge(task.priority || normalizePriority(task.priority));
   const progressColor = pr.color;
   const hoverCls = pr.text === 'Urgent' ? 'border-red' : pr.text === 'Medium' ? 'border-yellow' : 'border-blue';
 
@@ -23,11 +23,18 @@ export default function TaskCard({ task, onComplete, onDelete }) {
           </div>
         </div>
         <div className="actions">
-          <button className="action-btn bg-green" onClick={() => onComplete(task)} aria-label="complete">
-            <span className="material-symbols-outlined" style={{ color: '#22C55E' }}>check</span>
+          <button className="action-btn bg-green" title="Marcar completada" onClick={() => onComplete(task)} aria-label="completed">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
           </button>
-          <button className="action-btn bg-red" onClick={() => onDelete(task)} aria-label="delete">
-            <span className="material-symbols-outlined" style={{ color: '#EF4444' }}>delete</span>
+          <button className="action-btn bg-red" title="Eliminar" onClick={() => onDelete(task)} aria-label="deleted">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
           </button>
         </div>
       </div>

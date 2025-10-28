@@ -61,7 +61,10 @@ function App() {
         </div>
       </main>
       <button className="fab" onClick={() => setOpenModal(true)} aria-label="add">
-        <span className="material-symbols-outlined" style={{ fontSize: 28 }}>add</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
       </button>
       <AddTaskModal open={openModal} onClose={() => setOpenModal(false)} onSubmit={handleCreate} categories={categories} />
     </div>

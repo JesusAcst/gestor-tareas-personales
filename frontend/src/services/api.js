@@ -23,6 +23,14 @@ export const categoriesApi = {
   list: () => http('/api/categories'),
 };
 
+export function normalizePriority(value) {
+  if (!value) return 'low';
+  const v = String(value).trim().toLowerCase();
+  if (['high', 'alta', 'alto', 'urgente', 'urgent'].includes(v)) return 'high';
+  if (['medium', 'media', 'medio'].includes(v)) return 'medium';
+  return 'low';
+}
+
 export function formatDueDate(iso) {
   if (!iso) return '';
   const now = new Date();
@@ -38,7 +46,8 @@ export function formatDueDate(iso) {
 }
 
 export function priorityBadge(priority) {
-  switch (priority) {
+  const p = normalizePriority(priority);
+  switch (p) {
     case 'high': return { text: 'Urgent', cls: 'badge red', color: '#ef4444' };
     case 'medium': return { text: 'Medium', cls: 'badge yellow', color: '#f59e0b' };
     default: return { text: 'Low', cls: 'badge blue', color: '#3b82f6' };

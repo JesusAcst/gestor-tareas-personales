@@ -17,6 +17,24 @@ body {
   --radius: 12px;
 }
 
+/* Ensure Material Symbols render as icons */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-style: normal;
+  font-weight: 400;
+  font-variant-lligatures: normal;
+  font-variant-ligatures: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+}
+
 /* Header */
 .header {
   display: flex;
