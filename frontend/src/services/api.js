@@ -21,6 +21,9 @@ export const tasksApi = {
 
 export const categoriesApi = {
   list: () => http('/api/categories'),
+  create: (payload) => http('/api/categories', { method: 'POST', body: JSON.stringify(payload) }),
+  update: (id, payload) => http(`/api/categories/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  remove: (id) => http(`/api/categories/${id}`, { method: 'DELETE' }),
 };
 
 export function normalizePriority(value) {

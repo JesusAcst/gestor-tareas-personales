@@ -104,8 +104,17 @@ const createTask = async (req, res) => {
 
     try {
         // 1. Verificar si la Category existe (solo si se proporciona)
+        // Acepta tanto objeto { _id, name, color } como ID directo
+        let categoryId = null;
         if (category) {
-             const categoryExists = await Category.findById(category);
+            // Si es un objeto, extraer el _id
+            if (typeof category === 'object' && category._id) {
+                categoryId = category._id;
+            } else {
+                categoryId = category;
+            }
+            
+            const categoryExists = await Category.findById(categoryId);
 
             if (!categoryExists) {
                 return res.status(404).json({ message: 'La categoría especificada no existe.' });
@@ -121,7 +130,7 @@ const createTask = async (req, res) => {
         const task = await Task.create({
             title,
             description,
-            category,
+            category: categoryId,
             dueDate: due,
             priority, // Pasa el valor de prioridad
             reminder: reminderDate, // Pasa el objeto Date del reminder
@@ -155,6 +164,7 @@ const updateTask = async (req, res) => {
         }
         
         // LÓGICA DE CATEGORÍA: Permite asignar a null o cambiar a otra existente
+        // Acepta tanto objeto { _id, name, color } como ID directo
         if (category !== undefined) {
             // 1. Si la categoría es nula o vacía (para desvincular)
             if (category === null || category === '') {
@@ -162,12 +172,22 @@ const updateTask = async (req, res) => {
                 task.category = null;
             } 
             // 2. Si es una categoría nueva diferente a la actual, verificamos que exista
-            else if (category.toString() !== (task.category ? task.category.toString() : null)) {
-                const categoryExists = await Category.findById(category);
-                if (!categoryExists) {
-                    return res.status(404).json({ message: 'La nueva categoría especificada no existe.' });
+            else {
+                // Extraer ID si es un objeto
+                let categoryId = null;
+                if (typeof category === 'object' && category._id) {
+                    categoryId = category._id;
+                } else {
+                    categoryId = category;
                 }
-                task.category = category;
+                
+                if (categoryId.toString() !== (task.category ? task.category.toString() : null)) {
+                    const categoryExists = await Category.findById(categoryId);
+                    if (!categoryExists) {
+                        return res.status(404).json({ message: 'La nueva categoría especificada no existe.' });
+                    }
+                    task.category = categoryId;
+                }
             }
         }
 
